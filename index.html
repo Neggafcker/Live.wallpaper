@@ -1,22 +1,79 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rainy Anime Wallpaper</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anime Rain Wallpaper</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url('anime_rain_wallpaper.png') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
-  <div class="background">
-    <img src="anime_rain_wallpaper.png" alt="Anime Background" class="bg-image" />
-    <canvas id="rain-canvas"></canvas>
-    <div class="info">
-      <div id="time"></div>
-      <div id="date"></div>
-      <div id="day"></div>
-    </div>
-  </div>
-  <script src="script.js"></script>
+  <canvas id="rainCanvas"></canvas>
+
+  <script>
+    // Simple animated rain effect on canvas
+    const canvas = document.getElementById("rainCanvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let raindrops = [];
+
+    function createRain() {
+      for (let i = 0; i < 250; i++) {
+        raindrops.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          length: Math.random() * 15 + 10,
+          opacity: Math.random() * 0.5 + 0.2,
+          speed: Math.random() * 4 + 2
+        });
+      }
+    }
+
+    function drawRain() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+      ctx.lineWidth = 1;
+
+      for (let drop of raindrops) {
+        ctx.beginPath();
+        ctx.moveTo(drop.x, drop.y);
+        ctx.lineTo(drop.x, drop.y + drop.length);
+        ctx.stroke();
+        drop.y += drop.speed;
+        if (drop.y > canvas.height) {
+          drop.y = -drop.length;
+          drop.x = Math.random() * canvas.width;
+        }
+      }
+
+      requestAnimationFrame(drawRain);
+    }
+
+    createRain();
+    drawRain();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 </body>
 </html>
